@@ -103,7 +103,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${Qt6Multimedia_INCLUDE_DIRS}
     ${Qt6MultimediaWidgets_INCLUDE_DIRS}
     #${Qt6WebEngineWidgets_INCLUDE_DIRS}
-    ${Vulkan_INCLUDE_DIRS}
+    #${Vulkan_INCLUDE_DIRS}
     "${PROJECT_SOURCE_DIR}/include"
 )
 
@@ -114,7 +114,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Multimedia
     Qt6::MultimediaWidgets
     #Qt6::WebEngineWidgets
-    Vulkan::Vulkan
+    #Vulkan::Vulkan
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
