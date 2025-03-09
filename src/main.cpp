@@ -4,6 +4,8 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QStyleFactory>
+#include <QLocalServer>
+#include <QLocalSocket>
 #include "ui/MainWindow.h"
 #include "Ticker.h"
 #include "ui/NotifyWidget.h"
@@ -20,6 +22,30 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication app(argc, argv);
+
+	static const char* const uniqueAppName = "Reminder_UniqueAppServer";
+
+	QLocalSocket socket;
+	socket.connectToServer(uniqueAppName);
+	if (socket.waitForConnected(500)) 
+	{
+#ifdef _WIN32
+		_CrtDumpMemoryLeaks(); // Dump memory leaks
+#endif
+		return 1;
+	}
+
+	// 创建本地服务器
+	QLocalServer server;
+	if (!server.listen(uniqueAppName))
+	{
+#ifdef _WIN32
+		_CrtDumpMemoryLeaks(); // Dump memory leaks
+#endif
+		return 1;
+	}
+
+
 	app.setStyle(QStyleFactory::create("Fusion"));
 
     reminder::MainWindow window;
