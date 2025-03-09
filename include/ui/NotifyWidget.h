@@ -2,9 +2,10 @@
 #include <QDialog>
 #include "ui_mediaPlayer.h"
 #include "Ticker.h"
-#include <QMediaPlayer>
-#include <QAudioOutput>
 
+class QMediaPlayer;
+class QAudioOutput;
+class QMediaDevices;
 namespace reminder
 {
 	class DialogMediaPlayer : public QDialog
@@ -16,10 +17,9 @@ namespace reminder
 
 	private:
 		Ui::DialogMediaPlayer ui;
-		QMediaPlayer* m_videoPlayer;
-		QMediaPlayer* m_audioPlayer;
-		QAudioOutput* m_videoAudioOutput;
-		QAudioOutput* m_audioAudioOutput;
+		QMediaDevices* m_mediaDevices;
+		QMediaPlayer* m_mediaPlayer;
+		QAudioOutput* m_audioOutput;
 		qint64 m_videoDuration = 10ll * 60 * 1000;
 		qint64 m_audioDuration = 10ll * 60 * 1000;
 		std::queue<Schedule> m_outOfDateQueue;
