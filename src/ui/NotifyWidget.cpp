@@ -104,7 +104,7 @@ namespace reminder
 		connect(ui.horizontalSlider_progressAudio, &QSlider::sliderMoved,
 			[this, maxRangeValue](int value)
 			{
-				qint64 pos = static_cast<qint64>(static_cast<double>(m_videoDuration) / maxRangeValue * value);
+				qint64 pos = static_cast<qint64>(static_cast<double>(value * m_videoDuration) / static_cast<double>(maxRangeValue));
 				m_mediaPlayer->setPosition(pos);
 
 				auto timeStr = convertToTimeString(pos, m_audioDuration);
@@ -196,7 +196,7 @@ namespace reminder
 		connect(ui.horizontalSlider_progressVideo, &QSlider::sliderMoved, 
 			[this, maxRangeValue](int value)
 			{
-				qint64 pos = static_cast<qint64>(static_cast<double>(m_videoDuration) / maxRangeValue * value);
+				qint64 pos = static_cast<qint64>(static_cast<double>(value * m_videoDuration) / static_cast<double>(maxRangeValue));
 				m_mediaPlayer->setPosition(pos);
 
 				auto timeStr = convertToTimeString(pos, m_videoDuration);
