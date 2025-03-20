@@ -15,11 +15,7 @@ namespace reminder
 		const Schedule& getSchedule() const noexcept { return m_schedule; }
 
 		int editSchedule(const Schedule& sch);
-		int addSchedule() 
-		{
-			setWindowTitle(tr("添加待办"));
-			return exec(); 
-		}
+		int addSchedule();
 
 	private:
 		Ui::Dialog ui;

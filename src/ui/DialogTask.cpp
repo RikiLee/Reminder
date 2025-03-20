@@ -53,6 +53,13 @@ namespace reminder
 		return exec();
 	}
 
+	int DialogTask::addSchedule()
+	{
+		setWindowTitle(tr("添加待办"));
+		ui.timeEdit->setTime(QTime::currentTime());
+		return exec();
+	}
+
 	void DialogTask::setDialogValue()
 	{
 		needCheck = false;

@@ -26,6 +26,7 @@ namespace reminder
 		std::queue<Schedule> m_commonQueue;
 		TimePoint m_showStartTime;
 		Schedule m_currentSch;
+		bool m_progressPressed = false;
 
 		void display();
 		inline std::string convertToTimeString(qint64 position, qint64 duration);

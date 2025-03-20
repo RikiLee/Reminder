@@ -33,6 +33,8 @@ namespace reminder
 			}
 		);
 
+		connect(this, &QDialog::accepted, [this]() { m_progressPressed = false; });
+
 		/// audio player
 		// play or pause
 		connect(ui.pushButton_playAudio, &QPushButton::clicked,
@@ -101,10 +103,17 @@ namespace reminder
 			});
 		// progress
 		auto maxRangeValue = ui.horizontalSlider_progressAudio->maximum();
-		connect(ui.horizontalSlider_progressAudio, &QSlider::sliderMoved,
-			[this, maxRangeValue](int value)
+		connect(ui.horizontalSlider_progressAudio, &QSlider::sliderPressed,
+			[this]()
 			{
-				qint64 pos = static_cast<qint64>(static_cast<double>(value * m_videoDuration) / static_cast<double>(maxRangeValue));
+				m_progressPressed = true;
+			}
+		);
+		connect(ui.horizontalSlider_progressAudio, &QSlider::sliderReleased,
+			[this, maxRangeValue]()
+			{
+				qint64 pos = static_cast<qint64>(
+					static_cast<double>(ui.horizontalSlider_progressAudio->value() * m_videoDuration) / static_cast<double>(maxRangeValue));
 				m_mediaPlayer->setPosition(pos);
 
 				auto timeStr = convertToTimeString(pos, m_audioDuration);
@@ -114,9 +123,12 @@ namespace reminder
 		connect(m_mediaPlayer, &QMediaPlayer::positionChanged,
 			[this, maxRangeValue](qint64 pos)
 			{
-				// update progress
-				int v = pos * maxRangeValue / m_audioDuration;
-				ui.horizontalSlider_progressAudio->setValue(v);
+				if (!m_progressPressed)
+				{
+					// update progress
+					int v = pos * maxRangeValue / m_audioDuration;
+					ui.horizontalSlider_progressAudio->setValue(v);
+				}
 				// update play time
 				auto timeStr = convertToTimeString(pos, m_audioDuration);
 				ui.label_timeAudio->setText(QString::fromStdString(timeStr));
@@ -193,22 +205,34 @@ namespace reminder
 			});
 		// progress
 		maxRangeValue = ui.horizontalSlider_progressVideo->maximum();
-		connect(ui.horizontalSlider_progressVideo, &QSlider::sliderMoved, 
-			[this, maxRangeValue](int value)
+		connect(ui.horizontalSlider_progressVideo, &QSlider::sliderPressed,
+			[this, maxRangeValue]()
 			{
-				qint64 pos = static_cast<qint64>(static_cast<double>(value * m_videoDuration) / static_cast<double>(maxRangeValue));
+				m_progressPressed = true;
+			}
+		);
+		connect(ui.horizontalSlider_progressVideo, &QSlider::sliderReleased, 
+			[this, maxRangeValue]()
+			{
+				qint64 pos = static_cast<qint64>(
+					static_cast<double>(ui.horizontalSlider_progressVideo->value() * m_videoDuration) / static_cast<double>(maxRangeValue));
 				m_mediaPlayer->setPosition(pos);
 
 				auto timeStr = convertToTimeString(pos, m_videoDuration);
 				ui.label_timeVideo->setText(QString::fromStdString(timeStr));
+
+				m_progressPressed = false;
 			}
 		);
 		connect(m_mediaPlayer, &QMediaPlayer::positionChanged, 
 			[this, maxRangeValue](qint64 pos)
 			{
-				// update progress
-				int v = pos * maxRangeValue / m_videoDuration;
-				ui.horizontalSlider_progressVideo->setValue(v);
+				if (!m_progressPressed)
+				{
+					// update progress
+					int v = pos * maxRangeValue / m_videoDuration;
+					ui.horizontalSlider_progressVideo->setValue(v);
+				}
 				// update play time
 				auto timeStr = convertToTimeString(pos, m_videoDuration);
 				ui.label_timeVideo->setText(QString::fromStdString(timeStr));
@@ -314,7 +338,8 @@ namespace reminder
 				int v = ui.horizontalSlider_progressVideo->value();
 				if (v >= ui.horizontalSlider_progressVideo->maximum())
 				{
-					hide();
+					m_mediaPlayer->stop();
+					accept();
 					ui.progressBar->setValue(0);
 				}
 				else
@@ -327,7 +352,8 @@ namespace reminder
 				int v = ui.horizontalSlider_progressAudio->value();
 				if (v >= ui.horizontalSlider_progressAudio->maximum())
 				{
-					hide();
+					m_mediaPlayer->stop();
+					accept();
 					ui.progressBar->setValue(0);
 				}
 				else
@@ -343,7 +369,7 @@ namespace reminder
 				int v = static_cast<int>(0.002 * milliSec);
 				if (v >= maxRangeValue)
 				{
-					hide();
+					accept();
 					ui.progressBar->setValue(0);
 				}
 				else
@@ -388,7 +414,7 @@ namespace reminder
 		default:
 			break;
 		}
-		hide();
+		accept();
 	}
 
 	void DialogMediaPlayer::showOutOfDateNotification(std::queue<Schedule>& schedules)
