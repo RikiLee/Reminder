@@ -254,6 +254,7 @@ namespace reminder
 
 	void DialogMediaPlayer::display()
 	{
+		m_progressPressed = false;
 		ui.stackedWidget->setCurrentIndex(static_cast<int>(m_currentSch.m_displayEffect));
 		ui.label_event->setText(QString::fromStdString(m_currentSch.m_event));
 		switch (m_currentSch.m_displayEffect)
@@ -312,12 +313,6 @@ namespace reminder
 		return oss.str();
 	}
 
-	void DialogMediaPlayer::hideAndReset()
-	{
-		hide();
-		m_progressPressed = false;
-	}
-
 	void DialogMediaPlayer::updateDisplay()
 	{
 		if (isHidden())
@@ -343,7 +338,7 @@ namespace reminder
 				if (v >= ui.horizontalSlider_progressVideo->maximum())
 				{
 					m_mediaPlayer->stop();
-					hideAndReset();
+					hide();
 					ui.progressBar->setValue(0);
 				}
 				else
@@ -357,7 +352,7 @@ namespace reminder
 				if (v >= ui.horizontalSlider_progressAudio->maximum())
 				{
 					m_mediaPlayer->stop();
-					hideAndReset();
+					hide();
 					ui.progressBar->setValue(0);
 				}
 				else
@@ -373,7 +368,7 @@ namespace reminder
 				int v = static_cast<int>(0.002 * milliSec);
 				if (v >= maxRangeValue)
 				{
-					hideAndReset();
+					hide();
 					ui.progressBar->setValue(0);
 				}
 				else
@@ -418,7 +413,7 @@ namespace reminder
 		default:
 			break;
 		}
-		hideAndReset();
+		hide();
 	}
 
 	void DialogMediaPlayer::showOutOfDateNotification(std::queue<Schedule>& schedules)

@@ -30,7 +30,6 @@ namespace reminder
 
 		void display();
 		inline std::string convertToTimeString(qint64 position, qint64 duration);
-		void hideAndReset();
 
 
 	public slots:
