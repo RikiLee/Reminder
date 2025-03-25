@@ -33,8 +33,6 @@ namespace reminder
 			}
 		);
 
-		connect(this, &QDialog::accepted, [this]() { m_progressPressed = false; });
-
 		/// audio player
 		// play or pause
 		connect(ui.pushButton_playAudio, &QPushButton::clicked,
@@ -314,6 +312,12 @@ namespace reminder
 		return oss.str();
 	}
 
+	void DialogMediaPlayer::hideAndReset()
+	{
+		hide();
+		m_progressPressed = false;
+	}
+
 	void DialogMediaPlayer::updateDisplay()
 	{
 		if (isHidden())
@@ -339,7 +343,7 @@ namespace reminder
 				if (v >= ui.horizontalSlider_progressVideo->maximum())
 				{
 					m_mediaPlayer->stop();
-					accept();
+					hideAndReset();
 					ui.progressBar->setValue(0);
 				}
 				else
@@ -353,7 +357,7 @@ namespace reminder
 				if (v >= ui.horizontalSlider_progressAudio->maximum())
 				{
 					m_mediaPlayer->stop();
-					accept();
+					hideAndReset();
 					ui.progressBar->setValue(0);
 				}
 				else
@@ -369,7 +373,7 @@ namespace reminder
 				int v = static_cast<int>(0.002 * milliSec);
 				if (v >= maxRangeValue)
 				{
-					accept();
+					hideAndReset();
 					ui.progressBar->setValue(0);
 				}
 				else
@@ -414,7 +418,7 @@ namespace reminder
 		default:
 			break;
 		}
-		accept();
+		hideAndReset();
 	}
 
 	void DialogMediaPlayer::showOutOfDateNotification(std::queue<Schedule>& schedules)
